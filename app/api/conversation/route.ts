@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 import { Configuration, OpenAIApi } from 'openai'
 
 const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: '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',
 })
 
 const openai = new OpenAIApi(configuration)
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     }
 
     if (!configuration.apiKey) {
-      return new NextResponse('OpenAI API Key not configured.', { status: 500 })
+      return new NextResponse('No API key found', { status: 500 })
     }
 
     if (!messages) {
@@ -30,7 +30,6 @@ export async function POST(req: Request) {
       model: 'gpt-3.5-turbo',
       messages,
     })
-
     return NextResponse.json(response.data.choices[0].message)
   } catch (error) {
     console.log('[CONVERSATION_ERROR]', error)

@@ -12,10 +12,16 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { ChatCompletionRequestMessage } from 'openai'
 import axios from 'axios'
+import Empty from '@/components/Empty'
+import Loader from '@/components/Loader'
+import { cn } from '@/lib/utils'
+import UserAvatar from '@/components/UserAvatar'
+import BotAvatar from '@/components/BotAvatar'
 
 const ConversationPage = () => {
-  const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([])
   const router = useRouter()
+  const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([])
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -40,12 +46,12 @@ const ConversationPage = () => {
 
       form.reset()
     } catch (error: any) {
-      // TODO:open PRO MODAL
       console.log(error)
     } finally {
       router.refresh()
     }
   }
+
   console.log(messages)
   return (
     <div>
@@ -61,7 +67,7 @@ const ConversationPage = () => {
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="grid w-full grid-cols-12 gap-2 rounded-lg border p-4 px-3 focus-within:shadow-sm md:px-6"
+              className="focus-within:shadow-s grid w-full grid-cols-12 gap-2 rounded-lg border p-4 px-3 md:px-6"
             >
               <FormField
                 name="prompt"
@@ -71,7 +77,7 @@ const ConversationPage = () => {
                       <Input
                         className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                         disabled={isLoading}
-                        placeholder="How do i calculate the radius of a circle?"
+                        placeholder="How do I calculate the radius of a circle?"
                         {...field}
                       />
                     </FormControl>
@@ -80,7 +86,9 @@ const ConversationPage = () => {
               />
               <Button
                 className="col-span-12 w-full lg:col-span-2"
+                type="submit"
                 disabled={isLoading}
+                size="icon"
               >
                 Generate
               </Button>
@@ -88,9 +96,30 @@ const ConversationPage = () => {
           </Form>
         </div>
         <div className="mt-4 space-y-4">
+          {isLoading && (
+            <div className="flex w-full items-center justify-center rounded-lg bg-muted p-8">
+              <Loader />
+            </div>
+          )}
+          {messages.length === 0 && !isLoading && (
+            <div>
+              <Empty label="No conversation started" />
+            </div>
+          )}
           <div className="flex flex-col-reverse gap-y-4">
             {messages.map((message) => (
-              <div key={message.content}>{message.content}</div>
+              <div
+                key={message.content}
+                className={cn(
+                  'flex w-full items-start gap-x-8 rounded-lg p-8',
+                  message.role === 'user'
+                    ? 'border border-black/10 bg-white'
+                    : 'bg-muted'
+                )}
+              >
+                {message.role === 'user' ? <UserAvatar /> : <BotAvatar />}
+                <p className="text-sm">{message.content}</p>
+              </div>
             ))}
           </div>
         </div>
