@@ -1,5 +1,6 @@
 import { auth, currentUser } from '@clerk/nextjs'
 import { NextResponse } from 'next/server'
+
 import prismadb from '@/lib/prismadb'
 import { stripe } from '@/lib/Stripe'
 import { absoluteUrl } from '@/lib/utils'
@@ -7,10 +8,10 @@ import { absoluteUrl } from '@/lib/utils'
 const settingsUrl = absoluteUrl('/settings')
 
 export async function GET() {
-  const { userId } = auth()
-  const user = await currentUser()
-
   try {
+    const { userId } = auth()
+    const user = await currentUser()
+
     if (!userId || !user) {
       return new NextResponse('Unauthorized', { status: 401 })
     }
@@ -42,10 +43,10 @@ export async function GET() {
           price_data: {
             currency: 'USD',
             product_data: {
-              name: 'AI Service',
-              description: 'Unlimited AI Service',
+              name: 'Genius Pro',
+              description: 'Unlimited AI Generations',
             },
-            unit_amount: 3000,
+            unit_amount: 2000,
             recurring: {
               interval: 'month',
             },
@@ -57,6 +58,7 @@ export async function GET() {
         userId,
       },
     })
+
     return new NextResponse(JSON.stringify({ url: stripeSession.url }))
   } catch (error) {
     console.log('[STRIPE_ERROR]', error)
