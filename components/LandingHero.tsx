@@ -24,7 +24,7 @@ const LandingHero = () => {
         Create content using AI 10x Faster
       </div>
       <div>
-        <Link href={isSignedIn ? '/' : '/sign-up'}>
+        <Link href={isSignedIn ? '/dashboard' : '/sign-up'}>
           <Button
             variant="premium"
             className="rounded-full p-4 font-semibold md:p-6 md:text-lg"
