@@ -18,8 +18,12 @@ import { cn } from '@/lib/utils'
 import UserAvatar from '@/components/UserAvatar'
 import BotAvatar from '@/components/BotAvatar'
 import ReactMarkdown from 'react-markdown'
+import { useProModal } from '@/hooks/useProModal'
+import { toast } from 'react-hot-toast'
 
 const CodePage = () => {
+  const proModal = useProModal()
+
   const router = useRouter()
   const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([])
 
@@ -47,7 +51,11 @@ const CodePage = () => {
 
       form.reset()
     } catch (error: any) {
-      console.log(error)
+      if (error?.response?.status === 403) {
+        proModal.onOpen()
+      } else {
+        toast.error('Something went wrong')
+      }
     } finally {
       router.refresh()
     }
@@ -85,6 +93,7 @@ const CodePage = () => {
                   </FormItem>
                 )}
               />
+
               <Button
                 className="col-span-12 w-full lg:col-span-2"
                 type="submit"

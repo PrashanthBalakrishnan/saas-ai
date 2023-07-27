@@ -1,15 +1,7 @@
 'use client'
 import { Card } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
-import {
-  ArrowRight,
-  MessageSquare,
-  ImageIcon,
-  VideoIcon,
-  Music,
-  Code,
-  Settings,
-} from 'lucide-react'
+import { ArrowRight, MessageSquare, ImageIcon, Code } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 const tools = [
@@ -28,20 +20,6 @@ const tools = [
     href: '/image',
   },
 
-  {
-    label: 'Video Generation',
-    icon: VideoIcon,
-    color: 'text-orange-700',
-    bgColor: 'bg-orange-700/10',
-    href: '/video',
-  },
-  {
-    label: 'Music Generation',
-    icon: Music,
-    color: 'text-emerald-500',
-    bgColor: 'bg-emerald-500/10',
-    href: '/music',
-  },
   {
     label: 'Code Generation',
     icon: Code,

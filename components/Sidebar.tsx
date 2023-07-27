@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
+import FreeCounter from './FreeCounter'
 
 const montserrat = Montserrat({ weight: '600', subsets: ['latin'] })
 
@@ -37,18 +38,18 @@ const routes = [
     href: '/image',
     color: 'text-pink-700',
   },
-  {
-    label: 'Video Generation',
-    icon: VideoIcon,
-    href: '/video',
-    color: 'text-orange-700',
-  },
-  {
-    label: 'Music Generation',
-    icon: Music,
-    href: '/music',
-    color: 'text-emerald-700',
-  },
+  // {
+  //   label: 'Video Generation',
+  //   icon: VideoIcon,
+  //   href: '/video',
+  //   color: 'text-orange-700',
+  // },
+  // {
+  //   label: 'Music Generation',
+  //   icon: Music,
+  //   href: '/music',
+  //   color: 'text-emerald-700',
+  // },
   {
     label: 'Code Generation',
     icon: Code,
@@ -62,7 +63,12 @@ const routes = [
   },
 ]
 
-const Sidebar = () => {
+interface SidebarProps {
+  apiLimitCount: number
+  isPro: boolean
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ apiLimitCount, isPro }) => {
   const pathname = usePathname()
   return (
     <div className="flex h-full flex-col space-y-4 bg-slate-900 py-4 text-white">
@@ -93,6 +99,7 @@ const Sidebar = () => {
           ))}
         </div>
       </div>
+      <FreeCounter apiLimitCount={apiLimitCount} isPro={isPro} />
     </div>
   )
 }

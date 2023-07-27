@@ -1,7 +1,7 @@
 'use client'
 import * as z from 'zod'
 import Heading from '@/components/Heading'
-import { ImageIcon } from 'lucide-react'
+import { Download, ImageIcon } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { amountOptions, formSchema, resolutionOptions } from './constants'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -21,8 +21,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Card, CardFooter } from '@/components/ui/card'
+import Image from 'next/image'
+import { useProModal } from '@/hooks/useProModal'
+import { toast } from 'react-hot-toast'
 
 const ImagePage = () => {
+  const proModal = useProModal()
+
   const [images, setImages] = useState<string[]>([])
   const router = useRouter()
 
@@ -48,7 +54,11 @@ const ImagePage = () => {
 
       form.reset()
     } catch (error: any) {
-      console.log(error)
+      if (error?.response?.status === 403) {
+        proModal.onOpen()
+      } else {
+        toast.error('Something went wrong')
+      }
     } finally {
       router.refresh()
     }
@@ -89,7 +99,7 @@ const ImagePage = () => {
                 control={form.control}
                 name="amount"
                 render={({ field }) => (
-                  <FormItem className="cols-span-12 lg:col-span-2">
+                  <FormItem className="col-span-12 lg:col-span-2">
                     <Select
                       disabled={isLoading}
                       onValueChange={field.onChange}
@@ -116,7 +126,7 @@ const ImagePage = () => {
                 control={form.control}
                 name="resolution"
                 render={({ field }) => (
-                  <FormItem className="cols-span-12 lg:col-span-2">
+                  <FormItem className="col-span-12 lg:col-span-2">
                     <Select
                       disabled={isLoading}
                       onValueChange={field.onChange}
@@ -161,7 +171,25 @@ const ImagePage = () => {
               <Empty label="No images generated" />
             </div>
           )}
-          <div>Image will be rendered here</div>
+          <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {images.map((src) => (
+              <Card key={src} className="overflow-hidden rounded-lg">
+                <div className="relative aspect-square">
+                  <Image src={src} alt="Image" fill />
+                </div>
+                <CardFooter className="p-2">
+                  <Button
+                    onClick={() => window.open(src)}
+                    variant="secondary"
+                    className="w-full"
+                  >
+                    <Download className="mr-2 h-4 w-4" />
+                    Download
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
         </div>
       </div>
     </div>
